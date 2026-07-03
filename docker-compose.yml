@@ -1,0 +1,65 @@
+services:
+  cli-proxy-api:
+    image: eceasy/cli-proxy-api:v7.2.49
+    container_name: cli-proxy-api
+    restart: unless-stopped
+    ports:
+      - "8317:8317"    # Main proxy port
+      - "1455:1455"    # Redis queue port
+    volumes:
+      - ./cpa/config.yaml:/CLIProxyAPI/config.yaml:ro
+      - ./cpa/auths:/root/.cli-proxy-api
+      - ./cpa/logs:/CLIProxyAPI/logs
+    networks:
+      - cpa-network
+    environment:
+      - TZ=${TZ:-Europe/Madrid}
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8317"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  cpa-usage-keeper:
+    image: ghcr.io/willxup/cpa-usage-keeper:v1.12.4
+    container_name: cpa-usage-keeper
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./keeper/data:/data
+    networks:
+      - cpa-network
+    depends_on:
+      cli-proxy-api:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+      CPA_BASE_URL: http://cli-proxy-api:8317
+      CPA_MANAGEMENT_KEY: sk-mgmt-cliproxy
+      AUTH_ENABLED: "true"
+      LOGIN_PASSWORD: ${KEEPER_LOGIN_PASSWORD}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+networks:
+  cpa-network:
+    driver: bridge
+    name: cpa-network
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

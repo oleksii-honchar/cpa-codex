@@ -1,0 +1,11 @@
+# Secrets
+.env
+
+# Auth tokens
+cpa/auths/
+
+# Logs
+cpa/logs/
+
+# Keeper data
+keeper/data/
