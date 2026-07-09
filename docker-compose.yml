@@ -1,6 +1,6 @@
 services:
   cli-proxy-api:
-    image: eceasy/cli-proxy-api:v7.2.49
+    image: better-cpa:local
     container_name: cli-proxy-api
     restart: unless-stopped
     ports:
@@ -44,6 +44,7 @@ services:
       TZ: ${TZ:-Europe/Madrid}
       CPA_BASE_URL: http://cli-proxy-api:8317
       CPA_MANAGEMENT_KEY: sk-mgmt-cliproxy
+      REDIS_QUEUE_ADDR: cli-proxy-api:8317
       AUTH_ENABLED: "true"
       LOGIN_PASSWORD: ${KEEPER_LOGIN_PASSWORD}
     healthcheck:
