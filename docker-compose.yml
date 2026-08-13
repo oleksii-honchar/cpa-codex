@@ -14,6 +14,11 @@ services:
       - cpa-network
     environment:
       - TZ=${TZ:-Europe/Madrid}
+    logging:
+      driver: json-file
+      options:
+        max-size: "32m"
+        max-file: "5"
     healthcheck:
       test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8317"]
       interval: 10s
