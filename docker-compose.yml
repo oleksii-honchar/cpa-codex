@@ -1,6 +1,6 @@
 services:
   cli-proxy-api:
-    image: better-cpa:v7.2.141-4-g13123d7c
+    image: better-cpa:v7.2.141-5-g274c2619-dirty
     container_name: cli-proxy-api
     restart: unless-stopped
     ports:
