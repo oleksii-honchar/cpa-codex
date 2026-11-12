@@ -105,3 +105,45 @@ If Homebrew CPA is still running on port 8317, stop it first:
 ```bash
 brew services stop cliproxyapi
 ```
+
+---
+
+## 🟢 Native mode (launchd) — PRIMARY since 2026-11-12
+
+The stack runs as native macOS binaries under launchd: it auto-starts at login, restarts on crash, and needs **no podman VM** (the VM was costing ~1.8 GB RAM to host ~500 MB of services). The Docker Compose setup below is kept as a **cold fallback** (see "Rolling back").
+
+| Piece | Location |
+|---|---|
+| Binaries | `native/bin/CLIProxyAPI` (better-cpa HEAD + version ldflags), `native/bin/cpa-usage-keeper` (pinned tag) |
+| Build (rebuild after upgrades) | `bash native/build-natives.sh` — assert-first: needs clean `../better-cpa` tree + node/go toolchains |
+| Launchers (what launchd runs) | `native/bin/run-cpa.sh`, `native/bin/run-keeper.sh` — source `.env`, set host-loopback addresses, `WORK_DIR=keeper/data` |
+| LaunchAgents | `~/Library/LaunchAgents/io.github.oleksii-honchar.cli-proxy-api.plist`, `io.github.oleksii-honchar.cpa-usage-keeper.plist` (RunAtLoad + KeepAlive) |
+| Logs (launchd stdout) | `native/logs/*.launchd.*.log` — app logs unchanged (`cpa/logs`, `keeper/data/logs`) |
+| Config notes | `cpa/config.yaml` `auth-dir` is now an **absolute path** — valid natively AND inside podman (VM mounts `/Users` at identical paths) |
+
+### Runbook
+
+```bash
+launchctl print gui/$(id -u)/io.github.oleksii-honchar.cli-proxy-api | grep state   # status
+launchctl kickstart -k gui/$(id -u)/io.github.oleksii-honchar.cli-proxy-api         # restart now
+launchctl bootout   gui/$(id -u)/io.github.oleksii-honchar.cli-proxy-api            # stop until next login
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/io.github.oleksii-honchar.cli-proxy-api.plist  # start again
+# same with …/io.github.oleksii-honchar.cpa-usage-keeper for the dashboard
+```
+
+After changing `.env` or a binary: `launchctl kickstart -k` both labels.
+Ports are unchanged: 8317 proxy, 8080 dashboard (1455 unused — CPA's queue is internal).
+
+### Rolling back to containers (if ever needed)
+
+```bash
+launchctl bootout gui/$(id -u)/io.github.oleksii-honchar.cli-proxy-api
+launchctl bootout gui/$(id -u)/io.github.oleksii-honchar.cpa-usage-keeper
+podman machine start && podman start cli-proxy-api cpa-usage-keeper
+```
+
+### Podman Desktop note
+
+The app remains in Login Items. Turn OFF *Settings → Resources → auto-start machine* (Podman Desktop UI) so opening it never re-spends the VM memory; nothing here needs the VM running.
+
+*(Authored by agent session `ses_e2fbdd97cffePqsWRXefklzstH`, 2026-11-12; acceptance steps 1–6 verified that day, reboot check at first real reboot.)*

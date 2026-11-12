@@ -1,0 +1,21 @@
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis inbox process task started[90m | [0minterval=1s
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mmetadata sync task started
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mCPA errors ingest started
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mstorage cleanup task started
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mdatabase backup task started
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis ingest state changed[90m | [0mmode=subscribe state=subscribe_backfill status=subscribe_connected
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis usage key selected[90m | [0mredis_key=usage
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis subscribe backfill used redis pull[90m | [0mbatch_count=0 message_count=0
+[90m2026-11-12T16:18:28+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis ingest state changed[90m | [0mmode=subscribe state=subscribe_receiving status=subscribing
+[90m2026-11-12T16:18:29+01:00[0m[90m | [0m[32minfo [0m[90m | [0mmetadata sync switched to notification mode[90m | [0msource=support_refresh
+[90m2026-11-12T16:18:45+01:00[0m[90m | [0m[32minfo [0m[90m | [0mmetadata sync switched to polling mode[90m | [0mreason=subscribe_disconnected
+[90m2026-11-12T16:18:45+01:00[0m[90m | [0m[33mwarn [0m[90m | [0mCPA errors subscription unavailable[90m | [0merror=EOF retry=1 retry_in=10s
+[90m2026-11-12T16:18:45+01:00[0m[90m | [0m[31merror[0m[90m | [0mredis ingest failed[90m | [0merror=EOF status=subscribe_disconnected
+[90m2026-11-12T16:18:45+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis ingest state changed[90m | [0mmode=subscribe state=subscribe_degraded_polling status=subscribe_degraded_polling
+[90m2026-11-12T16:18:45+01:00[0m[90m | [0m[33mwarn [0m[90m | [0mredis ingest fallback failed[90m | [0merror="connect redis queue: dial tcp 127.0.0.1:8317: connect: connection refused" status=subscribe_degraded_redis_failed
+[90m2026-11-12T16:18:45+01:00[0m[90m | [0m[31merror[0m[90m | [0mredis ingest failed[90m | [0merror="connect redis queue: dial tcp 127.0.0.1:8317: connect: connection refused\nrequest management usage queue: Get \"http://127.0.0.1:8317/v0/management/usage-queue?count=10000\": dial tcp 127.0.0.1:8317: connect: connection refused" status=subscribe_degraded_failed
+[90m2026-11-12T16:18:46+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis ingest recovered[90m | [0mmessage_count=0 mode=subscribe state=subscribe_degraded_polling status=empty
+[90m2026-11-12T16:19:15+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis ingest state changed[90m | [0mmode=subscribe state=subscribe_backfill status=subscribe_reconnected
+[90m2026-11-12T16:19:15+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis subscribe backfill used redis pull[90m | [0mbatch_count=0 message_count=0
+[90m2026-11-12T16:19:15+01:00[0m[90m | [0m[32minfo [0m[90m | [0mredis ingest state changed[90m | [0mmode=subscribe state=subscribe_receiving status=subscribing
+[90m2026-11-12T16:19:16+01:00[0m[90m | [0m[32minfo [0m[90m | [0mmetadata sync switched to notification mode[90m | [0msource=support_refresh
